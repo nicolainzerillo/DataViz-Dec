@@ -64,9 +64,14 @@ def display_charts(data: pd.DataFrame):
     st.subheader("Top 10 Games 🕹️")
     top_customers = data.groupby('title')['copies_sold'].sum().reset_index().sort_values('copies_sold',
                                                                                               ascending=False).head(10)
+    top_customer = top_customers.head(1)['title'].iloc[0]
+
+    top_customer_sales = top_customers.head(1)['copies_sold'].iloc[0] / data['copies_sold'].sum()
+
+    st.write(f':green[{top_customer} makes up {top_customer_sales: .0%} of total sales]')
 
     st.bar_chart(top_customers, x='title', y='copies_sold', color=["#ff4554"])
-    # "#03c3e3", "#ff4554"
+    # colors = "#03c3e3", "#ff4554"
 
     col1, col2 = st.columns(2)
 
