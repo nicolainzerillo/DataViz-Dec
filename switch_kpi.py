@@ -65,7 +65,7 @@ def display_charts(data: pd.DataFrame):
     top_customers = data.groupby('title')['copies_sold'].sum().reset_index().sort_values('copies_sold',
                                                                                               ascending=False).head(10)
 
-    st.bar_chart(top_customers, x='title', y='copies_sold')
+    st.bar_chart(top_customers, x='title', y='copies_sold', color=["#ff4554"])
     # "#03c3e3", "#ff4554"
 
     col1, col2 = st.columns(2)
