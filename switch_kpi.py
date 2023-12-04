@@ -51,13 +51,18 @@ def display_sidebar(data: pd.DataFrame) -> Tuple[List[str], List[str], List[str]
     start_date = pd.Timestamp(st.sidebar.date_input("Start date", data['release_date'].min().date()))
     end_date = pd.Timestamp(st.sidebar.date_input("End date", data['as_of'].max().date()))
 
-    selected_genres = st.sidebar.multiselect("Select Genre", data['genre'].unique())
+    selected_category = st.sidebar.radio("Select Category", ["Genre", "Developer", "Publisher"])
 
-    selected_developer = st.sidebar.multiselect("Select Developer", data['developer'].unique())
+    if selected_category == "Genre":
+        selected_values = st.sidebar.multiselect("Select Genre", data['genre'].unique())
+    elif selected_category == "Developer":
+        selected_values = st.sidebar.multiselect("Select Developer", data['developer'].unique())
+    elif selected_category == "Publisher":
+        selected_values = st.sidebar.multiselect("Select Publisher", data['publisher'].unique())
+    else:
+        selected_values = []
 
-    selected_publisher = st.sidebar.multiselect("Select Publisher", data['publisher'].unique())
-
-    return selected_genres, selected_developer, selected_publisher
+    return selected_category, selected_values
 
 def display_charts(data: pd.DataFrame):
 
@@ -92,12 +97,16 @@ def main():
 
     st.title("🎮 Top Switch Games Dashboard")
 
-    selected_genres, selected_developer, selected_publisher = display_sidebar(data)
+    selected_category, selected_values = display_sidebar(data)
 
     filtered_data = data.copy()
-    filtered_data = filter_data(filtered_data, 'genre', selected_genres)
-    filtered_data = filter_data(filtered_data, 'developer', selected_developer)
-    filtered_data = filter_data(filtered_data, 'publisher', selected_publisher)
+
+    if selected_category == 'Genre':
+        filtered_data = filter_data(filtered_data, 'genre', selected_values)
+    elif selected_category == 'Developer':
+        filtered_data = filter_data(filtered_data, 'developer', selected_values)
+    elif selected_category == 'Publisher':
+        filtered_data = filter_data(filtered_data, 'publisher', selected_values)
 
     kpis = calculate_kpis(filtered_data)
     kpi_names = ["Total Sales", "Total Games", "Unique Developers", "Average Sales Per Developer"]
